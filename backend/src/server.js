@@ -17,7 +17,6 @@ app.use(cors({
    
 app.use("/api/inngest",serve({client:inngest,functions}));
 
-
 const __dirname = path.resolve();
     
 if(ENV.NODE_ENV === "production"){
