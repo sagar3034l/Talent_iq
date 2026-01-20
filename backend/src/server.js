@@ -11,15 +11,15 @@ const PORT = ENV.PORT
 app.use(express.json())
 
 app.use(cors({
-   origin: "http://localhost:5173",
+   origin: ENV.CLIENT_URL,
    credentials: true
 }))
+   
+app.use("/api/inngest",serve({client:inngest,functions}));
 
-app.use("/api/inngest",serve({client:inngest,functions}))
 
-
-const __dirname = path.resolve()
-
+const __dirname = path.resolve();
+    
 if(ENV.NODE_ENV === "production"){
    app.use(express.static(path.join(__dirname,"../frontend/dist")))
    app.get('/{*any}',(req,res)=>{
@@ -36,8 +36,7 @@ const startServer = async ()=>{
    } catch (error) {
       console.log("There is an error",error)
    }
-}
-
+}  
 
 
 startServer();
