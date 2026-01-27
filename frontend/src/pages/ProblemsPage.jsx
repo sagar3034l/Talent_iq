@@ -4,7 +4,6 @@ import { PROBLEMS } from '../Data/problems.js'
 import { Link } from 'react-router';
 import { ChevronRightIcon, Code2Icon, CodeIcon } from 'lucide-react';
 import { getDifficultybadgeClass } from '../lib/utils.js';
-import {useQuery, useMutation} from "@tanstack/react-query"
 
 function ProblemsPage() {
   const problems = Object.values(PROBLEMS);
