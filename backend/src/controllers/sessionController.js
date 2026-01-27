@@ -10,7 +10,7 @@ export async function createSession(req, res) {
         const clerkId = req.user.clerkId;
 
         if (!problem || !difficulty) {
-            return res.status(400).json({ message: "Problem and difficulty" });
+            return res.status(400).json({ message: "Problem and difficulty are required" });
         }
 
         const callId = `session_${Date.now()}_${Math.random().toString(36)}`
@@ -79,12 +79,12 @@ export async function getActiveSessions(req, res) {
 export async function getSessionById(req, res) {
     try {
         const { id } = req.params;
-        const session = await Session.find({ id })
+        const session = await Session.findById(id)
             .populate("host", "name email profileImage clerkId")
             .populate("participant", "name email profileImage clerkId");
 
         if (!session) {
-            res.status(404).json({ message: "Session not found" })
+            return res.status(404).json({ message: "Session not found" })
         }
         res.status(200).json({ session })
     } catch (error) {
