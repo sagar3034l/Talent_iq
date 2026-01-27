@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from '../components/Navbar.jsx'
-import { PROBLEMS } from '../data/problems.js'
+import { PROBLEMS } from '../Data/problems.js'
 import { Link } from 'react-router';
 import { ChevronRightIcon, Code2Icon, CodeIcon } from 'lucide-react';
 import { getDifficultybadgeClass } from '../lib/utils.js';
