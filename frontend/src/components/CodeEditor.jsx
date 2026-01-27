@@ -1,6 +1,6 @@
 import React from 'react'
 import { Edit, Loader2Icon, PlayIcon } from 'lucide-react'
-import { LANGUAGE_CONFIG } from '../data/problems'
+import { LANGUAGE_CONFIG } from '../Data/problems'
 import { Editor } from '@monaco-editor/react'
 
 function CodeEditor({ handleRunCode, isRunning, selectedLanguage, code, onRunCode, onCodeChange,onLanguageChange }) {
