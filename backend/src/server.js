@@ -14,10 +14,27 @@ const app = express();
 const PORT = ENV.PORT
 app.use(express.json())
 
-app.use(cors({
-   origin: ENV.CLIENT_URL,
-   credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://talentiq-production-cec9.up.railway.app",
+];
+
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
    
 app.use(clerkMiddleware());
 app.use("/api/inngest",serve({client:inngest,functions}));

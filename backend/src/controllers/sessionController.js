@@ -13,23 +13,25 @@ export async function createSession(req, res) {
             return res.status(400).json({ message: "Problem and difficulty are required" });
         }
 
-        const callId = `session_${Date.now()}_${Math.random().toString(36)}`
+        const callId = `session_${Date.now()}_${Math.random()
+            .toString(36)
+            .slice(2)}`
         const session = await Session.create({
-            problem, difficulty, host: userId, callId
+            problemTitle: problem, difficulty, host: userId, callId
         })
 
         // create a stream video call;
 
         await streamClient.video.call("default", callId).getOrCreate({
             data: {
-                created_by: clerkId,
+                created_by: { id: clerkId },
                 custom: { problem, difficulty, sessionId: session._id.toString() }
             }
         });
 
         const channel = chatClient.channel("messaging", callId, {
             name: `${problem} Session`,
-            created_by: clerkId,
+            created_by: { id: clerkId },
             members: [clerkId]
         })
 
@@ -52,8 +54,8 @@ export async function getRecentSesions(req, res) {
                 { participant: userId }
             ]
         }).sort({ createdAt: -1 })
-          .limit(20)
-
+            .limit(20)
+            
         res.status(200).json({ sessions })
 
     } catch (error) {
@@ -66,6 +68,7 @@ export async function getActiveSessions(req, res) {
     try {
         const sessions = await Session.find({ status: "active" })
             .populate("host", "name profileImage email clerkId")
+            .populate("participant", "name profileImage email clerkId")
             .sort({ createdAt: -1 })
             .limit(20);
 
@@ -102,6 +105,10 @@ export async function joinSession(req, res) {
         const session = await Session.findById(id)
         if (!session) {
             return res.status(404).json({ message: "Session not found" })
+        }
+
+        if (session.host.toString() === userId.toString()) {
+            return res.status(400).json({ message: "Host cannot join as participant" });
         }
         if (session.participant) {
             return res.status(404).json({ message: "Session is full" });

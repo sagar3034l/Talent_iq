@@ -25,7 +25,6 @@ const syncUser = inngest.createFunction(
         name: newUser.name,
         image: newUser.profileImage
        });
-        // todo do something else
     }
 )
 
@@ -37,7 +36,6 @@ const deleteUser = inngest.createFunction(
 
        const {id} = event.data
        await User.deleteOne({clerkId: id})        
-       // todo: do something else
        await deleteUser(id.toString())
     }
 )

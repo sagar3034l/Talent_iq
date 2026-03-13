@@ -32,7 +32,7 @@ const Navbar = () => {
                             <span className='font-medium hidden sm:inline'>Problems</span>
                         </div>
                     </Link>
-                     <Link
+                     <Link   
                         to={"/dashboard"}
                         className={`px-4 py-2.5 rounded-lg transition-all duration-200 ${isActive("/dashboard")
                                 ? "bg-primary text-primary-content"
