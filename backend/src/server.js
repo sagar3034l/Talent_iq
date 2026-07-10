@@ -14,9 +14,13 @@ const app = express();
 const PORT = ENV.PORT
 app.use(express.json())
 
+const allowedOrigins = [
+   "http://localhost:5173",
+   ENV.CLIENT_URL
+]
 
 app.use(cors({
-  origin: ENV.CLIENT_URL,
+  origin: allowedOrigins,
   credentials: true
 }))
    
