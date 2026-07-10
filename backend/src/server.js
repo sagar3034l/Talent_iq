@@ -14,27 +14,11 @@ const app = express();
 const PORT = ENV.PORT
 app.use(express.json())
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://talentiq-production-cec9.up.railway.app",
-];
 
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (like Postman)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}))
    
 app.use(clerkMiddleware());
 app.use("/api/inngest",serve({client:inngest,functions}));
@@ -46,7 +30,7 @@ const __dirname = path.resolve();
     
 if(ENV.NODE_ENV === "production"){
    app.use(express.static(path.join(__dirname,"../frontend/dist")))
-   app.get('*',(req,res)=>{
+   app.get('/{*any}',(req,res)=>{
       res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))
    })
 }

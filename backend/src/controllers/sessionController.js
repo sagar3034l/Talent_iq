@@ -19,13 +19,12 @@ export async function createSession(req, res) {
         const session = await Session.create({
             problemTitle: problem, difficulty, host: userId, callId
         })
-
         // create a stream video call;
-
+    
         await streamClient.video.call("default", callId).getOrCreate({
             data: {
                 created_by: { id: clerkId },
-                custom: { problem, difficulty, sessionId: session._id.toString() }
+                custom: { problem, difficulty, sessionId: session._id.toString() },
             }
         });
 
@@ -71,7 +70,7 @@ export async function getActiveSessions(req, res) {
             .populate("participant", "name profileImage email clerkId")
             .sort({ createdAt: -1 })
             .limit(20);
-
+        console.log(sessions)
         res.status(200).json({ sessions })
     } catch (error) {
         console.log("Error in getActiveSessions", error);
