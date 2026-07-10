@@ -12,7 +12,7 @@ import CreateSessionModal from '../components/CreateSessionModal';
 const DashBoard = () => {
 
   const navigate = useNavigate();
-  const user = useUser();
+  const { user } = useUser();
   const [showCreateModel, setShowCreateModel] = useState(null);
   const [roomConfig, setRoomConfig] = useState({ problem: "", difficulty: "" });
 
@@ -26,13 +26,13 @@ const DashBoard = () => {
   const handleCreateRoom = () => {
     if (!roomConfig.problem || !roomConfig.difficulty) return;
 
-    createSessionMutation.mutate({
+      createSessionMutation.mutate({
       problem: roomConfig.problem, difficulty: roomConfig.difficulty.toLowerCase()
     },
       {
         onSuccess: (data) => {
           setShowCreateModel(false);
-          navigate(`/session/${data.sessions._id}`)
+          navigate(`/session/${data.session._id}`)
         }
       }
     )
@@ -44,7 +44,7 @@ const DashBoard = () => {
   console.log(activeSessions)
 
   const isUserInSession = (session) => {
-    if (!user.id) return false
+    if (!user?.id) return false
     return session.host.clerkId === user.id || session.participant?.clerkId === user.id
   }
 

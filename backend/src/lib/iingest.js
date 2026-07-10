@@ -41,3 +41,10 @@ const deleteUser = inngest.createFunction(
 )
 
 export const functions = [syncUser,deleteUser]
+
+
+
+// https://inn.gs/e/UD5V47NN-CQbyIyPwcQyT7EnBJKvWi0fnNdTjl5TvDXMzmM5KRQjSz2CpGoIdHBM2XfAZLYYG7gnp0nD4lAo9Q
+
+
+// https://inn.gs/e/VRu9PyVIFpJzU_b0JmyPjlGh0Bu2-1sszYw-SXVq-eOzf_nOyEuers75ODU7szuiXUG770lsB9n3oPIy_nPBuA

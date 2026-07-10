@@ -27,6 +27,7 @@ function ProblemsPage() {
           {
             problems.map(problem =>
               <Link to={`/problem/${problem.id}`}
+               key={problem.id}
                className='card bg-base-100 hover:scale-[1.01]'>
                 <div className='card-body'>
                   <div className='flex gap-2 justify-between'>

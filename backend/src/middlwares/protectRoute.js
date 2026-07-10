@@ -1,5 +1,6 @@
-import {requireAuth} from '@clerk/express'
+import { clerkClient, requireAuth } from '@clerk/express'
 import User from '../models/User.js'
+import { upsertStreamUser } from '../lib/Stream.js'
 
 export const protectRoute = [
     requireAuth(),
@@ -10,9 +11,21 @@ export const protectRoute = [
                 return res.status(401).json({msg: "Unoathrized - invalid token"})
             }
             // find user in db by clerk id;
-            const user = await User.findOne({clerkId})
+            let user = await User.findOne({clerkId})
             if(!user){
-                return res.status(404).json({msg: "user not found"})
+                const clerkUser = await clerkClient.users.getUser(clerkId);
+                user = await User.create({
+                    clerkId,
+                    email: clerkUser.emailAddresses[0]?.emailAddress || `${clerkId}@no-email.local`,
+                    name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || clerkUser.username || "Unknown User",
+                    profileImage: clerkUser.imageUrl || ""
+                })
+
+                await upsertStreamUser({
+                    id: user.clerkId.toString(),
+                    name: user.name,
+                    image: user.profileImage
+                });
             }
 
             req.user = user

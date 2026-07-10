@@ -37,7 +37,7 @@ const ActiveSessions = ({ sessions, isLoading, isUserInSession }) => {
               <LoaderIcon className='animate-spin size-10 justify-center py-20' />
             ) : sessions.length > 0 ? (
               sessions.map((session) => (
-                <div key={session.id}
+                <div key={session._id}
                  className='card bg-base-200 border-2 border-base-300 hover:border-primary/50'>
                   <div className='flex items-center justify-between gap-4 p-5'>
                     {/* left side */}
