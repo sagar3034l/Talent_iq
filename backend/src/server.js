@@ -8,19 +8,20 @@ import { inngest,functions }  from './lib/iingest.js';
 import {clerkMiddleware} from '@clerk/express';
 import chatRoutes from './routes/chatRoutes.js'
 import sessionRoute from './routes/sessionRoute.js'
+import codeRouter from './routes/CodeRouter.js'
 
 const app = express();
 
 const PORT = ENV.PORT
 app.use(express.json())
 
-const allowedOrigins = [
-   "http://localhost:5173",
-   ENV.CLIENT_URL
+const allowedOrigin = [
+   ENV.CLIENT_URL,
+   "http://localhost:5173"
 ]
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: allowedOrigin,
   credentials: true
 }))
    
@@ -29,6 +30,7 @@ app.use("/api/inngest",serve({client:inngest,functions}));
 
 app.use('/api/chat',chatRoutes);
 app.use('/api/sessions',sessionRoute);
+app.use('/api/code',codeRouter)
 
 const __dirname = path.resolve();
     

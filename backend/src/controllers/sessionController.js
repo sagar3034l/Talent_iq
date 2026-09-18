@@ -6,8 +6,12 @@ import Session from "../models/Session.js";
 export async function createSession(req, res) {
     try {
         const { problem, difficulty } = req.body;
-        const userId = req.user._id;
-        const clerkId = req.user.clerkId;
+        const userId = req.user?._id;
+        const clerkId = req.user?.clerkId;
+
+        if (!userId || !clerkId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
 
         if (!problem || !difficulty) {
             return res.status(400).json({ message: "Problem and difficulty are required" });
@@ -45,7 +49,10 @@ export async function createSession(req, res) {
 export async function getRecentSesions(req, res) {
     try {
         // where the user is host or participant
-        const userId = req.user._id;
+        const userId = req.user?._id;
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" })
+        }
         const sessions = await Session.find({
             status: "completed",
             $or: [
@@ -63,14 +70,13 @@ export async function getRecentSesions(req, res) {
     }
 }
 
-export async function getActiveSessions(req, res) {
+export async function getActiveSessions(_req, res) {
     try {
         const sessions = await Session.find({ status: "active" })
             .populate("host", "name profileImage email clerkId")
             .populate("participant", "name profileImage email clerkId")
             .sort({ createdAt: -1 })
             .limit(20);
-        console.log(sessions)
         res.status(200).json({ sessions })
     } catch (error) {
         console.log("Error in getActiveSessions", error);
@@ -98,8 +104,12 @@ export async function getSessionById(req, res) {
 export async function joinSession(req, res) {
     try {
         const { id } = req.params;
-        const userId = req.user._id;
-        const clerkId = req.user.clerkId
+        const userId = req.user?._id;
+        const clerkId = req.user?.clerkId
+
+        if (!userId || !clerkId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
 
         const session = await Session.findById(id)
         if (!session) {
@@ -130,12 +140,15 @@ export async function joinSession(req, res) {
 export async function endSession(req, res) {
     try {
         const { id } = req.params;
-        const userId = req.user._id;
+        const userId = req.user?._id;
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" })
+        }
 
         const session = await Session.findById(id);
 
         if (!session) {
-            res.status(404).json({ message: "Session not found" })
+            return res.status(404).json({ message: "Session not found" })
         }
 
         if (session.host.toString() != userId.toString()) {
@@ -146,7 +159,7 @@ export async function endSession(req, res) {
         }
 
         session.status = "completed";
-        session.save();
+        await session.save();
 
         // delete video call
 

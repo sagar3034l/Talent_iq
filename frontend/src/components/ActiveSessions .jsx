@@ -3,8 +3,6 @@ import {
   ArrowRightIcon,
   Code2Icon,
   CrownIcon,
-  SparklesIcon,
-  UsersIcon,
   LoaderIcon,
   ZapIcon
 } from "lucide-react"

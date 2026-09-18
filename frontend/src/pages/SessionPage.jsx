@@ -24,32 +24,29 @@ const SessionPage = () => {
    const [isRunning, setIsRunning] = useState(false);
 
    const { data: sessiondata, isLoading: loadingSession, refetch } = useSessionById(id);
-
    // redirect the participant to dashboard if session ended
-
    const joinSessionMutation = useJoinSession();
    const endSessionMutation = useEndSession();
-
+   
    const session = sessiondata?.session;
-
+   
    const isHost = session?.host?.clerkId === user?.id;
    const isParticipant = session?.participant?.clerkId === user?.id;
-
-   const { call, channel, chatClient, isInitializingCall, streamClient } = useStreamClient(session, loadingSession, isHost, isParticipant)
-
    
-
+   const { call, channel, chatClient, isInitializingCall, streamClient } = useStreamClient(session, loadingSession, isHost, isParticipant)
+   
+   
+   
    const problemData = session?.problemTitle ? Object.values(PROBLEMS).find(p => p.title === session?.problemTitle) : null;
-
+   
    const [selectedlanguage, setSelectedLanguage] = useState("javascript");
    const [code, setCode] = useState(problemData?.starterCode?.[selectedlanguage] || "")
-
    // auto join session
    useEffect(() => {
       if (!session || !user || loadingSession) return;
       if (isHost || isParticipant) return;
       joinSessionMutation.mutate(id, { onSuccess: refetch })
-   }, [session, user, loadingSession, isHost, isParticipant, id])
+   }, [session, user, loadingSession, isHost, isParticipant, id, joinSessionMutation, refetch])
 
    useEffect(() => {
       if (problemData?.starterCode?.[selectedlanguage]) {
@@ -68,9 +65,12 @@ const SessionPage = () => {
    const handleRunCode = async () => {
       setIsRunning(true);
       setOutput(null);
-      const result = await executeCode(selectedlanguage, code);
-      setOutput(result);
-      setIsRunning(false);
+      try {
+         const result = await executeCode(selectedlanguage, code);
+         setOutput(result);
+      } finally {
+         setIsRunning(false);
+      }
    }
 
    const handleEndSession = async () => {
@@ -289,3 +289,4 @@ const SessionPage = () => {
 }
 
 export default SessionPage
+ 

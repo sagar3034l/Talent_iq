@@ -1,61 +1,29 @@
-// piston api is a service for code execution
+// Piston-backed code execution helper used by the browser pages.
 
-
-
-const PISTON_URL = 'https://emkc.org/api/v2/piston';
+import { codeExecute } from '../api/code';
 
 const LANGUAGE_VERSIONS = {
-    javascript: { language: "javascript", version: "18.15.0" },
-    python: { language: "python", version: "3.10.0" },
+    javascript: { language: "javascript", version: "20.11.1" },
+    python: { language: "python", version: "3.12.0" },
     java: { language: "java", version: "15.0.2" },
 }
-
+    
 export async function executeCode(language, code) {
     try {
         const languageConfig = LANGUAGE_VERSIONS[language]
-        if (!languageConfig) {
+        if(!languageConfig) {
             return {
                 success: false,
-                error: `Unsopperted language ${language}`
-            }
+                error: `Unsupported language ${language}`
+            } 
         }
-        const response = await fetch(`${PISTON_URL}/execute`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                language: languageConfig.language,
-                version: languageConfig.version,
-                files: [
-                    { name: `Main.${getFileExtension(language)}`, content: code }
-                ]
-            })
-        })
-        if (!response.ok) {
-            return {
-                success: false,
-                error: `HTTP error! status: ${response.status}`
-            }
-        }
+        const fileName = language === "java"
+            ? "Main.java"
+            : `code.${getFileExtension(language)}`
 
-        const data = await response.json();
+        const files =  [{ name: fileName, content: code }]
 
-        const output = data.run.output || ""
-        const stderr = data.run.stderr || ""
-
-        if (stderr) {
-            return {
-                success: false,
-                output: output,
-                error: stderr
-            }
-        }
-
-        return {
-            success: true,
-            output: output || ""
-        }
+        return await codeExecute(languageConfig.language, languageConfig.version, files)
 
     } catch (error) {
         return {
@@ -74,3 +42,5 @@ function getFileExtension(language) {
     }
     return extensions[language] || "txt"
 }
+
+

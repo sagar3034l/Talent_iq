@@ -1,9 +1,9 @@
 import React from 'react'
-import { Edit, Loader2Icon, PlayIcon } from 'lucide-react'
+import { Loader2Icon, PlayIcon } from 'lucide-react'
 import { LANGUAGE_CONFIG } from '../Data/problems'
 import { Editor } from '@monaco-editor/react'
 
-function CodeEditor({ handleRunCode, isRunning, selectedLanguage, code, onRunCode, onCodeChange,onLanguageChange }) {
+function CodeEditor({ isRunning, selectedLanguage, code, onRunCode, onCodeChange,onLanguageChange }) {
   return (
     <div className='h-full bg-base-300 flex flex-col'>
       <div className='flex items-center justify-between px-4 py-3 bg-base-100 border-t border-base-300'>
@@ -28,7 +28,7 @@ function CodeEditor({ handleRunCode, isRunning, selectedLanguage, code, onRunCod
               Running...
             </>
           ) : (
-            <PlayIcon className='size-5 mr-2' onClick={handleRunCode} />
+            <PlayIcon className='size-5 mr-2' />
           )}
          <h1>Run Code</h1>
         </button>

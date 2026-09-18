@@ -19,7 +19,7 @@ function useStreamClient( session, loadingSession, isHost, isParticipant ) {
 
             if (!isHost && !isParticipant) return;
 
-            try {
+            try { 
                 
                 const { token, userId, userName, userImage } = await sessionApi.getStreamToken();
                 const client = await initializeStreamClient({
@@ -32,9 +32,9 @@ function useStreamClient( session, loadingSession, isHost, isParticipant ) {
                 setStreamClient(client);
                 videoCall = client.call("default", session.callId);
                 await videoCall.join({create:true});
-                
+            
                 setCall(videoCall)
-    
+            
                 const apiKey = import.meta.env.VITE_STREAM_API_KEY;
                 chatClientInstance = StreamChat.getInstance(apiKey);
                 await chatClientInstance.connectUser({

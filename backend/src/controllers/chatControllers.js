@@ -3,12 +3,17 @@ import { chatClient } from "../lib/Stream.js";
 
 export async function getStreamToken(req,res){
     try {
-        const token = chatClient.createToken(req.user.clerkId);
+        const clerkId = req.user?.clerkId;
+        if (!clerkId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const token = chatClient.createToken(clerkId);
         return res.status(200).json({
             token,
-            userId: req.user.clerkId,
-            userName: req.user.name,
-            userImage: req.user.image
+            userId: clerkId,
+            userName: req.user?.name || "Unknown User",
+            userImage: req.user?.profileImage || ""
         })
     } catch (error) {
         console.log(error);
